@@ -462,8 +462,12 @@ pub fn display_layer_gizmo<T: bevy::gizmos::config::GizmoConfigGroup>(
             .iter()
             .filter(|i| **i != u32::MAX)
             .map(|i| {
-                (layer.vertices[*i as usize].coords * scale)
-                    .extend(-layer.height.get(*i as usize).cloned().unwrap_or_default())
+                (layer.vertices[*i as usize].coords * scale).extend(
+                    -layer
+                        .heights()
+                        .and_then(|heights| heights.get(*i as usize).cloned())
+                        .unwrap_or_default(),
+                )
             })
             .map(|v| mesh_to_world.transform_point(v))
             .collect::<Vec<_>>();
@@ -472,8 +476,12 @@ pub fn display_layer_gizmo<T: bevy::gizmos::config::GizmoConfigGroup>(
             let first = &layer.vertices[first_index];
             v.push(
                 mesh_to_world.transform_point(
-                    (first.coords * scale)
-                        .extend(-layer.height.get(first_index).cloned().unwrap_or_default()),
+                    (first.coords * scale).extend(
+                        -layer
+                            .heights()
+                            .and_then(|heights| heights.get(first_index).cloned())
+                            .unwrap_or_default(),
+                    ),
                 ),
             );
             gizmos.linestrip(v, color);
@@ -500,8 +508,12 @@ pub fn display_polygon_gizmo<T: bevy::gizmos::config::GizmoConfigGroup>(
         .iter()
         .filter(|i| **i != u32::MAX)
         .map(|i| {
-            (layer.vertices[*i as usize].coords * scale)
-                .extend(-layer.height.get(*i as usize).cloned().unwrap_or_default())
+            (layer.vertices[*i as usize].coords * scale).extend(
+                -layer
+                    .heights()
+                    .and_then(|heights| heights.get(*i as usize).cloned())
+                    .unwrap_or_default(),
+            )
         })
         .map(|v| mesh_to_world.transform_point(v))
         .collect::<Vec<_>>();
@@ -510,8 +522,12 @@ pub fn display_polygon_gizmo<T: bevy::gizmos::config::GizmoConfigGroup>(
         let first = &layer.vertices[first_index];
         v.push(
             mesh_to_world.transform_point(
-                (first.coords * scale)
-                    .extend(-layer.height.get(first_index).cloned().unwrap_or_default()),
+                (first.coords * scale).extend(
+                    -layer
+                        .heights()
+                        .and_then(|heights| heights.get(first_index).cloned())
+                        .unwrap_or_default(),
+                ),
             ),
         );
         gizmos.linestrip(v, color);
